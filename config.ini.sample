@@ -1,0 +1,6 @@
+[mongodb]
+host: mongodb host name or ip address
+port: 27017
+user: mongodb user
+password: mongodb password
+
