@@ -1,0 +1,38 @@
+#! /bin/bash
+
+export COMPILER_VERSION="gnu-4.8.4"
+export HDF5_VERSION="hdf5-1.8.16"
+export NETCDF_VERSION="netcdf-c-4.4.0"
+
+export CC=gcc
+export FC=gfortran
+export F90=gfortran
+export CXX=g++
+
+export NETCDF_SCAVENGER_ROOT="/home/ubuntu/netcdf-scavenger"
+
+export HDF5_HOME=$NETCDF_SCAVENGER_ROOT/ext/$HDF5_VERSION-$COMPILER_VERSION/
+export LD_LIBRARY_PATH=$HDF5_HOME/lib:$LD_LIBRARY_PATH
+export PATH=$HDF5_HOME/bin:$PATH
+
+export NETCDF=$NETCDF_SCAVENGER_ROOT/ext/$NETCDF_VERSION-$COMPILER_VERSION/
+export LD_LIBRARY_PATH=$NETCDF/lib:$LD_LIBRARY_PATH
+export PATH=$NETCDF/bin:$PATH
+
+export HDF5_DIR=$HDF5_HOME
+export HDF5_INCDIR=$HDF5_HOME/include/
+export HDF5_LIBDIR=$HDF5_HOME/lib/
+
+
+# HDF5 configure
+# ./configure --prefix=$HDF5_HOME --enable-hl --enable-shared --enable-fortran --enable-production --enable-unsupported --enable-cxx --with-zlib --with-szlib --enable-threadsafe --with-pthread
+
+# NETCDF configure
+#export CPPFLAGS="-I$HDF5_HOME/include"
+#export LDFLAGS="-L$HDF5_HOME/lib"
+# ./configure --prefix=$NETCDF --enable-netcdf-4 --enable-shared  --enable-dap --with-hdf5=$HDF5_HOME
+
+# NETCDF FORTRAN
+#export CPPFLAGS="-I$NETCDF/include"
+#export LDFLAGS="-L$NETCDF/lib"
+# ./configure --prefix=$NETCDF_FORTRAN
