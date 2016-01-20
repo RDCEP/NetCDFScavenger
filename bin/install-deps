@@ -1,0 +1,32 @@
+#! /bin/bash
+
+cd $NETCDF_SCAVENGER_ROOT/dist
+
+rm -rf ${HDF5_VERSION}* 2>/dev/null
+rm -rf ${NETCDF_VERSION}* 2>/dev/null
+rm -rf $HDF5_HOME 2>/dev/null
+rm -rf $NETCDF 2>/dev/null
+
+mkdir $NETCDF
+mkdir $HDF5_HOME
+
+wget http://www.hdfgroup.org/ftp/HDF5/current/src/${HDF5_VERSION}.tar.gz
+wget ftp://ftp.unidata.ucar.edu/pub/netcdf/${NETCDF_VERSION}.tar.gz
+
+tar -xvzf ${HDF5_VERSION}.tar.gz
+tar -xvzf ${NETCDF_VERSION}.tar.gz
+rm *.tar.gz
+cd  ${HDF5_VERSION}
+./configure --prefix=$HDF5_HOME --enable-hl --enable-shared --enable-fortran --enable-production --enable-unsupported --enable-cxx --with-zlib --with-szlib --enable-threadsafe --with-pthread
+cd d
+make install
+cd ..
+rm -rf ${HDF5_VERSION}
+export CPPFLAGS="-I$HDF5_HOME/include"
+export LDFLAGS="-L$HDF5_HOME/lib"
+cd ${NETCDF_VERSION}
+./configure --prefix=$NETCDF --enable-netcdf-4 --enable-shared  --enable-dap --with-hdf5=$HDF5_HOME
+make
+make install
+cd ..
+rm -rf ${NETCDF_VERSION}
