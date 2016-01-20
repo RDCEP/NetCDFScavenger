@@ -12,14 +12,23 @@ This README would normally document whatever steps are necessary to get your app
 
 * Summary of set up
 * Configuration
+
 1.  Amazon Machine Image (AMI): Ubuntu Server 14.04 LTS (HVM), SSD Volume Type - ami-fce3c696
+
 2.  Instance Type: t2.micro
+
 3.  Instance Details: default
+
 4. Add Storage: none
+
 5. Tag instance: Name=NetCDF_Scavenger
+
 6. Configure Security Group: just ssh
+
 7. Review Instance Launch : Launch! (select you public key)
+
 8. View the instance boot and copy the public ip address
+
 * Dependencies
 Using ssh login as ubuntu user
 
