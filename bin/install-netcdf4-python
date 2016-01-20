@@ -10,7 +10,7 @@ export HDF5_INCDIR=$HDF5_DIR/include/
 export HDF5_LIBDIR=$HDF5_DIR/lib/
 python setup.py build
 python setup.py install
-cd netcdf4-python/test/
+cd $HOME/netcdf4-python/test/
 python run_all.py
 cd $HOME
 rm -rf netcdf4-python
