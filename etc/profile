@@ -2,7 +2,7 @@
 
 export COMPILER_VERSION="gnu-4.8.4"
 export HDF5_VERSION="hdf5-1.8.16"
-export NETCDF_VERSION="netcdf-c-4.4.0"
+export NETCDF_VERSION="netcdf-4.4.0"
 
 export CC=gcc
 export FC=gfortran
@@ -10,6 +10,7 @@ export F90=gfortran
 export CXX=g++
 
 export NETCDF_SCAVENGER_ROOT="/home/ubuntu/netcdf-scavenger"
+export PATH=$NETCDF_SCAVENGER_ROOT/bin:$PATH
 
 export HDF5_HOME=$NETCDF_SCAVENGER_ROOT/ext/$HDF5_VERSION-$COMPILER_VERSION/
 export LD_LIBRARY_PATH=$HDF5_HOME/lib:$LD_LIBRARY_PATH
