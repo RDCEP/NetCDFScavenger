@@ -30,6 +30,7 @@ This README would normally document whatever steps are necessary to get your app
 8. View the instance boot and copy the public ip address
 
 * Dependencies
+
 Using ssh login as ubuntu user
 
 sudo apt-get update
@@ -55,6 +56,7 @@ source /home/ubuntu/netcdf-scavenger/etc/profile
 install-netcdf4-python
 
 * Database configuration
+
 If you want to install a mongodb instance on the same machine (just for testing purposes)
 
 install-mongoldb
