@@ -13,3 +13,9 @@ SPIDER_MODULES = ['netcdf_scraper.spiders']
 NEWSPIDER_MODULE = 'netcdf_scraper.spiders'
 USER_AGENT = '%s/%s' % (BOT_NAME, BOT_VERSION)
 
+DOWNLOADER_MIDDLEWARES = {
+    'netcdf_scraper.middlewares.FilterResponses': 999,
+}
+
+DOWNLOAD_MAXSIZE = 0
+DOWNLOAD_WARNSIZE = 0

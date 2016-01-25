@@ -9,6 +9,8 @@ import urlparse
 import tempfile
 import datetime
 
+from netcdf_scraper.scavenger import NetCDF2JSON
+
 from scrapy.spiders import CrawlSpider, Rule
 from scrapy.linkextractors.sgml import SgmlLinkExtractor
 from scrapy.selector import HtmlXPathSelector
@@ -22,18 +24,16 @@ import ConfigParser
 
 class NetCDFSpider(CrawlSpider):
     name = 'netcdf'
-    allowed_domains = ['.edu','.gov','opendap.org']
+    allowed_domains = ['uchicago.edu']
     start_urls = [
-        'http://www.unidata.ucar.edu/software/netcdf/examples/files.html',
-        'http://docs.opendap.org/index.php/Dataset_List',
-        'http://gcmd.gsfc.nasa.gov/KeywordSearch/Home.do?Portal=dods',
-        'http://users.rcc.uchicago.edu/~davidkelly999/',
-        'http://nomads.ncep.noaa.gov/pub/data/nccf/com/gfs/prod/',
+        'http://users.rcc.uchicago.edu/~davidkelly999/'
     ]
 
     rules = (
         Rule(SgmlLinkExtractor(allow=(), restrict_xpaths=('//a',)), callback="parse_items", follow= True),
     )
+
+    response_type_whitelist=".*text.*"
 
     def __init__(self):
         super(NetCDFSpider, self).__init__()
@@ -56,6 +56,9 @@ class NetCDFSpider(CrawlSpider):
             stored_item=None
             # Try to check if this url has been visided using mongodb
             client = MongoClient(self.mongodb_url)
+            user=self.configSectionMap("mongodb")['user']
+            password=self.configSectionMap("mongodb")['password']
+            print "user:"+user+" password:"+password
             if client.netcdf.authenticate(user, password) is True:
                 db = client.netcdf
                 items = db.items
@@ -89,7 +92,8 @@ class NetCDFSpider(CrawlSpider):
             	wget.download(tempdir,response.url)
 		downloaded=True
 	    # Get the feature 
-            feature=self.get_item_info(filename, response.url)
+            netCDF2JSON=NetCDF2JSON()
+            feature=netCDF2JSON(filename, response.url)
 
 	    # Remove the downloaed file and directory if needed
             if downloaded is True:
@@ -113,121 +117,6 @@ class NetCDFSpider(CrawlSpider):
 
 	# Return the item
         return item
-
-    def get_item_info(self, filename,url):
-        gradscheck_filename="/opt/galaxy/tools/faceit/gradscheck.gs"
-        try:
-            rootgrp = Dataset(filename)
-        except:
-            return None
-
-        args=gradscheck_filename+" "+filename
-        isGrADS=False
-        #print "[--"+args
-        #try:
-        p = subprocess.Popen(['grads', '-lbc', args ], stdout=subprocess.PIPE,stderr=subprocess.PIPE)
-        out, err = p.communicate()
-        if "[OK]" in out:
-            isGrADS=True
-        #except:
-        #    pass
-        #print "--]"
-        if filename.startswith("http"):
-            isOpenDAP=True
-        else:
-            isOpenDAP=False
-
-        lon1=None
-        lon2=None
-        lat1=None
-        lat2=None
-        feature=None
-        geo=False
-
-        if geo is False:
-            try:
-                lon1=float(min(rootgrp.variables['lon']))
-                lon2=float(max(rootgrp.variables['lon']))
-                lat1=float(min(rootgrp.variables['lat']))
-                lat2=float(max(rootgrp.variables['lat']))
-                geo=True
-            except:
-                pass
-
-        if geo is False:
-            try:
-                lon1=float(min(rootgrp.variables['X']))
-                lon2=float(max(rootgrp.variables['X']))
-                lat1=float(min(rootgrp.variables['Y']))
-                lat2=float(max(rootgrp.variables['Y']))
-                geo=True
-            except:
-                pass
-
-        if geo is False:
-            try:
-                lon1=float(min(rootgrp.variables['longitude']))
-                lon2=float(max(rootgrp.variables['longitude']))
-                lat1=float(min(rootgrp.variables['latitude']))
-                lat2=float(max(rootgrp.variables['latitude']))
-                geo=True
-            except:
-                pass
-
-        variables=[]
-        for variable in rootgrp.variables.values():
-            attributes=[]
-            for attribute in variable.ncattrs():
-                attributes.append({ "name": str(attribute), "value": str(variable.getncattr(attribute))} )
-
-            dimensions=[]
-            for dimension in variable.dimensions:
-                dimensions.append(str(dimension))
-
-            shapes=[]
-            for shape in variable.shape:
-                shapes.append(shape)
-
-            variables.append({
-                "name":str(variable.name),
-                "dtype":str(variable.dtype),
-                "ndim":variable.ndim,
-                "shape":shapes,
-                "dimensions":dimensions,
-                "attributes":attributes
-                })
-
-        dimensions=[]
-        for dimension in rootgrp.dimensions.values():
-            dimensions.append({
-                "name":str(dimension.name),
-                "size":len(dimension),
-                #"unlimited":dimension.is_unlimited()
-                })
-
-        attributes=[]
-        for attribute in rootgrp.ncattrs():
-            attributes.append({ "name": str(attribute), "value": str(rootgrp.getncattr(attribute))} )
-
-        
-
-        feature={
-            "name":os.path.basename(filename),
-            "opendap":isOpenDAP,
-            "grads":isGrADS,
-            "dimensions":dimensions,
-            "variables":variables,
-            "url": str(url),
-            "date": str(datetime.datetime.utcnow()),
-            "attributes": attributes
-        }
-        if geo is True:
-            feature["loc"]={
-                "type": "Polygon",
-                 "coordinates": [[[lon1,lat1],[lon2,lat1],[lon2,lat2],[lon1,lat2],[lon1,lat1]]]
-            }
-        rootgrp.close()
-        return feature
 
     def configSectionMap(self,section):
         dict1 = {}
