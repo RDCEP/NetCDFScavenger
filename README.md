@@ -37,7 +37,7 @@ sudo apt-get update
 
 sudo apt-get upgrade
 
-sudo apt-get install build-essential gfortran git libcurl4-gnutls-dev m4 python-pip python-numpy python-dev libxslt1-dev libxml2-dev libbz2-dev python-twisted python-setuptools python-pymongo
+sudo apt-get install build-essential gfortran git libcurl4-gnutls-dev m4 python-pip python-numpy python-dev libxslt1-dev libxml2-dev libbz2-dev python-twisted python-setuptools python-pymongo grads nco cdo
 
 sudo pip install cython parallel_sync scrapy
 
