@@ -73,6 +73,8 @@ use admin
 
 db.createUser({ user: "admin",pwd: "abc123",roles: [ { role: "userAdminAnyDatabase", db: "admin" } ]})
 
+use netcdf
+
 db.createUser({ user: "scavenger",pwd: "Rey2015!",roles: [ { role: "userAdmin", db: "netcdf" } ]})
 
 quit()
