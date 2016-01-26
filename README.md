@@ -59,49 +59,25 @@ install-netcdf4-python
 
 If you want to install a mongodb instance on the same machine (just for testing purposes)
 
-install-mongoldb
+install-mongodb
 
-service mongod stop
 
-mongod --port 27017 --dbpath /var/lib/mongodb/
-
-From another shell on the same machine
 
 mongo --port 27017
 
 use admin
-
-db.createUser({ user: "admin",pwd: "abc123",roles: [ { role: "userAdminAnyDatabase", db: "admin" } ]})
-
+db.system.users.remove({})    <== removing all users
+db.system.version.remove({}) <== removing current version 
+db.system.version.insert({ "_id" : "authSchema", "currentVersion" : 3 })
 use netcdf
-
 db.createUser({ user: "scavenger",pwd: "Rey2015!",roles: [ { role: "userAdmin", db: "netcdf" } ]})
-
 quit()
-
-Hit CTRL-C to stop the mongod service
-
-Restart the service with auth
-
-mongod --auth --port 27017 --dbpath /var/lib/mongodb/
-
-From another shell on the same machine
-
-mongo --port 27017 -u "admin" -p "abc123" --authenticationDatabase "admin"
-
-quit()
-
-mongo --port 27017 -u "scavenger" -p "Rey2015!" --authenticationDatabase "admin"
-
-use netcdf
-
-quit()
-
-Hit CTRL-C to stop the mongod service
 
 Restart the service
 
-service mongod start
+service mongod restart
+
+exit
 
 * How to run tests
 
