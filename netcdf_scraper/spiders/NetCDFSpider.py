@@ -93,7 +93,7 @@ class NetCDFSpider(CrawlSpider):
 		downloaded=True
 	    # Get the feature 
             netCDF2JSON=NetCDF2JSON()
-            feature=netCDF2JSON(filename, response.url)
+            feature=netCDF2JSON.get(filename, response.url)
 
 	    # Remove the downloaed file and directory if needed
             if downloaded is True:
@@ -105,11 +105,11 @@ class NetCDFSpider(CrawlSpider):
                 #print json.dumps(feature,None,"\t")
 
 	        # Try to save the item in mongodb
-                client = MongoClient(mongodb_url)
+                client = MongoClient(self.mongodb_url)
                 if client.netcdf.authenticate(user, password) is True:
 		    db = client.netcdf
 		    items = db.items
-		    item_id = items.insert_one(feature).inserted_id
+		    item_id = items.insert(feature)
                     item["status"] = "NEWFT"
                 else:
                     print "No MongoDb authentication"
