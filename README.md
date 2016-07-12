@@ -47,6 +47,8 @@ mv NetCDFScavenger netcdf-scavenger
 
 cd netcdf-scavenger
 
+Edit the file etc/profile. Check the latest available HDF5 version on https://www.hdfgroup.org/HDF5/release/obtain5.html and modify the profile file.
+
 source etc/profile
 
 install-deps
