@@ -41,7 +41,9 @@ sudo apt-get install build-essential gfortran git libcurl4-gnutls-dev m4 python-
 
 sudo pip install cython parallel_sync scrapy
 
-git clone https://montella@bitbucket.org/montella/netcdf-scavenger.git 
+git clone https://github.com/RDCEP/NetCDFScavenger.git 
+
+mv NetCDFScavenger netcdf-scavenger
 
 cd netcdf-scavenger
 
